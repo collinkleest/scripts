@@ -2,6 +2,7 @@
 from dotenv import load_dotenv
 import requests as req
 import os
+from datetime import date
 
 # load environment variables
 load_dotenv()
@@ -20,8 +21,10 @@ PERSONAL_HOSTNAME = os.getenv('PERSONAL_HOSTNAME')
 
 ENDPOINT_URL = f'https://{GOOGLE_HOSTNAME}/nic/update?hostname={PERSONAL_HOSTNAME}'
 
-googleRequest = req.post(ENDPOINT_URL, auth=(DDNS_USERNAME, DDNS_PASSWORD))
 
-
-print()
+if __name__ == "__main__":
+    googleRequest = req.post(ENDPOINT_URL, auth=(DDNS_USERNAME, DDNS_PASSWORD))
+    if (googleRequest.status_code == 200):
+        with open("./ddns-log.log", "a+") as file:
+            file.write(date.today().strftime("%m/%d/%y") + " " + googleRequest.text + "\n")
 
